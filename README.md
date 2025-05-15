@@ -1,6 +1,7 @@
 Course Project
 ________________________________________
 Introduction
+
 With the rapid development of society and the continuous improvement of material living standards, individuals are increasingly prioritizing spiritual and cultural consumption. Music plays a significant role in daily life and entertainment. In advertising, music symbolizes brand identity and product style, influencing audience awareness, brand impression, and purchase intention. However, English songs often face challenges in resonating effectively within the Chinese market due to language barriers and cultural differences in emotional interpretation.
 This project aims to analyze the emotional tone of English lyrics within a Chinese cultural context to select suitable advertising music for the Chinese market. By developing a sentiment analysis framework, we classify the emotional tone (positive, negative, romantic, peaceful, excited) of 759 English lyrics, adapting them to align with Chinese cultural preferences. Three tools—VADER, Hugging Face Transformers, and a customized Chinese-adapted VADER—were utilized, along with a supervised binary classification approach to address data limitations.
 Key Objectives
@@ -24,12 +25,8 @@ It is a platform that houses a variety of cutting-edge natural language processi
 	Used for multi-class sentiment classification attempts, aiming to filter more emotions to match various advertising styles. Logistic regression provided a statistical approach to sentiment classification, complementing the rule-based and deep learning models.
 •	Sentiment Analysis of Lyrics
 ________________________________________
-Literature Review
-The use of music in advertising has been widely studied, with researchers emphasizing its impact on consumer psychology and behavior. It is often used as a background in advertisements to enhance product recall and purchase intention levels (Lavack, Thakor & Bottausci, 2008) and evoke emotions (Bigné & Alcañiz, 2017). Moreover, research in advertising has demonstrated the decisive emotional role of music in decision-making (Vermeulen & Beukeboom, 2016). Lyrics are a crucial component of music and can accurately convey emotions. Consistence between music and advertising can have a positive impact on the audience (Breves et al., 2020). Therefore, selecting background music that aligns with the product style is very important. Of course, if a familiar brand suddenly uses a different style of music, it may also attract the audience's attention (Dhalen et al., 2008). This is one reason why some brands use a strategy of first suppressing and then elevating emotions in their advertising style. Additionally, the consistency between lyrics and music may also influence consumer behavior (Ausin et al., 2021).
-However, people from different cultural backgrounds have varying understandings and emotional expressions of the same music and text (Fritz et al., 2013). For instance, the Mafa, a traditional community in Northern Cameroon with no prior exposure to Western music, can accurately identify happiness, sadness, and fear in Western music, suggesting that basic musical elements carry universal emotional cues (Fritz et al., 2009). Particularly, English songs mainly originate from Western countries that emphasize individualism and freedom, whereas China focuses on collectivist thought, valuing rules and harmony, and the majority are non-native English speakers (Liu Ye et al., 2023). This difference can lead to varying degrees of understanding of the same lyrics across these cultural backgrounds. Ignoring this difference can result in limitations and biases in analysis results, lacking cultural adaptability and universality, which can affect the effectiveness of advertising. This project aims to screen English pop songs from a Western cultural background for application in advertisements targeting a Chinese audience.
-Currently, two methods are widely used in lyrics sentiment classification research. One is based on sentiment dictionaries, which divide sentiment trends through segmentation and weight calculation. The other is based on machine learning, selecting feature vectors and training classifiers. This project uses rule-based VADER and Hugging Face methods to compare the application of sentiment analysis techniques on English lyrics (Ribeiro et al., 2016; Kaur et al., 2024). However, studies have shown discrepancies between VADER’s automated labeling and human annotations, with only approximately 50% agreement in sentiment classification on Twitter English texts (Biswas et al., 2022). This highlights potential misalignments between VADER’s rule-based logic and human emotional interpretation. Additionally, VADER was slightly adjusted to create a version more suitable for the Chinese cultural background, which was compared with the original VADER. In machine learning methods, logistic regression was used to attempt multi-class sentiment classification (Xin Wu & Yizhen Cao, 2018), aiming to filter more emotions to match more advertising styles. Bouazizi et al. [14] mentioned that multi-class classification has always been a challenging task given the complexity of natural languages and the difficulty of understanding and mathematically "quantifying" how humans express their feelings. The research results indicate that multi-class classification achieves lower accuracy for 7 different sentiment classes than binary classification. In the case of insufficient labeled data, consideration is given to switching to binary classification prediction.
-________________________________________
 Data Collection
+
 Data Sources and Acquisition
 •	APIs Used: 
 o	Spotify API (spotipy) with queries like "year: 2005-2014, genre: pop" to fetch 1049 songs. 
@@ -38,6 +35,7 @@ Functions and parameters:
 Search query: Search by year and genre in batches (such as year:2005-2014 genre:pop).
 Pagination processing: Get batch_size=50 songs per batch, and limit the total offset offset + limit ≤ 1000.
 Data extraction: Extract the song's unique identifier track_id, title title, artist artist, and release year year from the returned results, and store them in the all_tracks list without duplication.
+
 Error handling:
 Catch exceptions and print error information, such as request failure or rate limit triggering. Mitigate rate limit issues with time.sleep(1).
 o	Genius API (lyricsgenius) to retrieve lyrics, ensuring English content via langdetect.
@@ -46,6 +44,7 @@ Functions and parameters:
 Lyrics search: Search lyrics by song title and artist through genius_api.search_song(title, artist).
 Language filtering: Use langdetect to detect the language of lyrics. If it is not English (such as Chinese, Korean, Japanese, etc.), skip storage.
 Deduplication and storage: Only store unique lyrics in English to the lyrics_data list.
+
 Common Problems:
 Lyrics not found (e.g. Lyrics not found): The search may fail due to the lack of content in the Genius database, mismatch of song name/artist name, or special characters.
 No lyrics (e.g. Specified song does not contain lyrics): Some songs (e.g. instrumental or Intro) are marked as not containing lyrics.
@@ -59,6 +58,7 @@ Special character processing: Some song names contain brackets or symbols (such 
 The dataset comprised 1049 songs with necessary metadata, serving as a comprehensive foundation for analysis.
 ________________________________________
 Data Cleaning
+
 The cleaning process was essential to refine the dataset and ensure its suitability for sentiment analysis.
 •	Excel Cleaning: The initial dataset underwent a cleaning process using Excel, where duplicate entries and non-English songs were removed. After this refinement, a final dataset of 759 English songs was retained, with the following columns:
 o	id: Unique identifier for each song
@@ -76,6 +76,7 @@ o	Lyrics structure tags (e.g., [Chorus])
 o	Embedded information
 Preprocess (lowercasing, tokenization, lemmatization) for supervised learning.
 •	Result: Dataset contained 759 English song lyrics, ready for sentiment analysis with columns id, title, artist, lyrics.
+
 Labeling Process
 •	Manual Labeling: Randomly selected 166 songs and were labeled by 3 Chinese students into five mutually exclusive categories: excited, negative, romantic, peaceful, and positive, with each song assigned exactly one label.
 •	Processing: Applied a majority voting approach to determine the final label for each song. 
@@ -86,6 +87,7 @@ If all three labels differed, a fourth person was brought in to label the song, 
 •	Final Dataset: 759 songs with columns: id, title, artist, year, lyrics and label, ready for machine learning.
 ________________________________________
 Limitations
+
 Due to time and resource constraints, collecting a robust dataset with single sentiment labeling can be more challenging than allowing multiple sentiments. Also, advertising music often aims to evoke a range of emotions to connect with diverse audiences. By restricting sentiment labeling to one emotion, you may miss the complex emotional layers that make the music effective in conveying the brand message. And might not fully reflect the emotional engagement intended by the music, thus limiting the effectiveness of the advertising campaign.
 
 Individual focus and interpretation can vary widely. This subjectivity poses challenges in both developing tools that accurately emulate human judgment and ensuring uniformity among human evaluators. Emphasizing the necessity for clear guidelines and training for judges, as well as the ongoing enhancement of sentiment analysis algorithms to better match human interpretations.[10]
@@ -93,6 +95,7 @@ Individual focus and interpretation can vary widely. This subjectivity poses cha
 Men and women have different perspectives on music (Zander, 2006), and research shows that women are generally better at detecting nonverbal cues than men (Hall, Carter & Horgan, 2000). Therefore, having both male and female participants label song lyrics could help uncover gender differences in lyric interpretation. This approach can enhance the alignment of advertising products with their target audiences. 
 ________________________________________
 Prospectives
+
 Hybrid Approach for Sentiment Classification
 Combining dictionary-based methods with machine learning approaches for binary text sentiment classification can address the challenge of limited emotional vocabulary expansion inherent in dictionary-based methods, as well as the "curse of dimensionality" often encountered in feature selection within machine learning methods.
 
@@ -105,6 +108,7 @@ Additionally, leveraging sentiment from Chinese social media comments, which ref
 
 ________________________________________
 Conclusion:
+
 This study demonstrates the critical role of cultural adaptation in analyzing English lyrics for advertising music targeting Chinese audiences. By comparing three sentiment analysis frameworks—VADER, Hugging Face Transformers, and a culturally adapted VADER—the project revealed significant discrepancies in emotional interpretation. The original VADER, trained on Western data, skewed toward positivity (500+ songs labeled positive), while the Chinese-adapted VADER emphasized neutrality (~250 neutral), aligning with cultural norms of restraint. Hugging Face Transformers, leveraging contextual understanding, identified more negative sentiments (400+), highlighting its sensitivity to implicit metaphors.
 Facing limited labeled data (166 songs), binary classifiers achieved over 90% accuracy in filtering non-sentiment categories (e.g., "non-excited"), enabling practical screening of unsuitable tracks. Temporal analysis of unlabeled songs (593) revealed evolving Chinese perceptions, shifting from emotional sensitivity (2005–2013) to cultural adaptation (2014–2019) and stabilization (2020–2024).
 While constrained by data scarcity and subjective labeling, this work underscores the necessity of cultural context in cross-cultural advertising. Future integration of audio features and dynamic lexicon updates could refine alignment. For advertisers, prioritizing subtlety and neutrality—as reflected in the adapted VADER—offers a strategic edge in resonating with Chinese audiences. This framework bridges Western content with Eastern interpretation, advancing globalized yet localized advertising strategies.
