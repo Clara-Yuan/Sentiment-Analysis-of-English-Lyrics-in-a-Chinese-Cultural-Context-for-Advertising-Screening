@@ -4,9 +4,13 @@ Introduction
 
 With the rapid development of society and the continuous improvement of material living standards, individuals are increasingly prioritizing spiritual and cultural consumption. Music plays a significant role in daily life and entertainment. In advertising, music symbolizes brand identity and product style, influencing audience awareness, brand impression, and purchase intention. However, English songs often face challenges in resonating effectively within the Chinese market due to language barriers and cultural differences in emotional interpretation.
 This project aims to analyze the emotional tone of English lyrics within a Chinese cultural context to select suitable advertising music for the Chinese market. By developing a sentiment analysis framework, we classify the emotional tone (positive, negative, romantic, peaceful, excited) of 759 English lyrics, adapting them to align with Chinese cultural preferences. Three tools—VADER, Hugging Face Transformers, and a customized Chinese-adapted VADER—were utilized, along with a supervised binary classification approach to address data limitations.
+
 Key Objectives
+
 The primary objective of this project is to analyze the emotional tone of English lyrics within the Chinese cultural context and verify whether the Chinese cultural background impacts the understanding of English lyrics. This analysis is crucial for screening music for advertisements that align with brand identity and audience preferences. By understanding the emotional nuances that resonate with Chinese audiences, advertisers can craft more effective and culturally sensitive campaigns.
+
 Methodology
+
 •	Dataset Collection
 The dataset collection process involved leveraging APIs to gather a comprehensive set of English song lyrics suitable for sentiment analysis. Two main APIs were used:
 - Spotify API:
@@ -28,6 +32,7 @@ ________________________________________
 Data Collection
 
 Data Sources and Acquisition
+
 •	APIs Used: 
 o	Spotify API (spotipy) with queries like "year: 2005-2014, genre: pop" to fetch 1049 songs. 
 Authenticated through the Spotipy library, client_id and client_secret are used. Then, through Spotipy's search method, the song information is obtained, such as the song name, artist, year and other metadata, and stored in the DataFrame.
@@ -37,6 +42,7 @@ Pagination processing: Get batch_size=50 songs per batch, and limit the total of
 Data extraction: Extract the song's unique identifier track_id, title title, artist artist, and release year year from the returned results, and store them in the all_tracks list without duplication.
 
 Error handling:
+
 Catch exceptions and print error information, such as request failure or rate limit triggering. Mitigate rate limit issues with time.sleep(1).
 o	Genius API (lyricsgenius) to retrieve lyrics, ensuring English content via langdetect.
 Use the LyricsGenius library and authenticate it through the GENIUS_API_TOKEN provided. Search for lyrics by metadata such as song name and artist fetched from Spotify, and detect the language of the lyrics, skipping if it's non-English. For example, when searching for Chinese or Korean songs, if it detects that the lyrics are not in English, those songs are skipped.
@@ -46,6 +52,7 @@ Language filtering: Use langdetect to detect the language of lyrics. If it is no
 Deduplication and storage: Only store unique lyrics in English to the lyrics_data list.
 
 Common Problems:
+
 Lyrics not found (e.g. Lyrics not found): The search may fail due to the lack of content in the Genius database, mismatch of song name/artist name, or special characters.
 No lyrics (e.g. Specified song does not contain lyrics): Some songs (e.g. instrumental or Intro) are marked as not containing lyrics.
 Non-English lyrics (e.g. Skipping non-English song): Filter non-English content, such as Chinese, Korean, and Japanese songs.
@@ -78,6 +85,7 @@ Preprocess (lowercasing, tokenization, lemmatization) for supervised learning.
 •	Result: Dataset contained 759 English song lyrics, ready for sentiment analysis with columns id, title, artist, lyrics.
 
 Labeling Process
+
 •	Manual Labeling: Randomly selected 166 songs and were labeled by 3 Chinese students into five mutually exclusive categories: excited, negative, romantic, peaceful, and positive, with each song assigned exactly one label.
 •	Processing: Applied a majority voting approach to determine the final label for each song. 
 If all three classmates assigned the same label, that label was adopted. 
